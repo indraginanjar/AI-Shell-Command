@@ -1,0 +1,7 @@
+openai
+ipykernel
+html2text
+playwright
+pytest-playwright
+faiss-cpu
+asyncio
