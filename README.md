@@ -10,9 +10,11 @@ AI operation is done through OpenAI, so all supported language  by OpenAI can be
 
 ## Installation
 
+### Manual install
+
 Steps:
 
-1. clone the **aicommand** from
+1. clone the **aicommand** from <https://github.com/indraginanjar/AI-Command.git>
 
 2. Enter the **aicommand** project directory in commandline (assumed powershell or pwsh)
 
@@ -24,15 +26,29 @@ Steps:
 
 6. Include the **aicommand** project directory into system/user path on environment variable, so you could access it from any directory.
 
-## Environment Variable
+### Scripted install
 
-### Necessary environment variable
+Step:
+
+1. clone the **aicommand** from <https://github.com/indraginanjar/AI-Command.git>
+
+2. Enter the **aicommand** project directory in commandline (assumed powershell or pwsh)
+
+3. Run install script
+
+    ```powershell
+    install.ps1
+    ```
+
+### Environment Variable
+
+#### Necessary environment variable
 
 ```ini
 AI_COMMAND_OPENAI_API_KEY=<Your OpenAI API Key>
 ```
 
-### Optional environment variable
+#### Optional environment variable
 
 Default shell is **powershell** on Windows operating system. For any other operating system, aicommand will use **pwsh** as default shell.
 
