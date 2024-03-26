@@ -118,6 +118,8 @@ A powershell script that runs a python script for receiving AI response based on
 
 ### AI Prompt usage
 
+### AI Prompt usage on powershell
+
 AI Prompt usage syntax:
 
 ```powershell
@@ -142,4 +144,24 @@ Replace "VariableName" with the name of the environment variable you want to rem
 ```powershell
 Remove-Item env:MyVar
 ```
+````
+
+### AI Prompt usage on bash
+
+AI Prompt usage on bash example:
+
+````bash
+aiprompt.sh "how to remove an environment variable on bash"
+Prompt:
+how to remove an environment variable on bash
+Response:
+To remove an environment variable in the bash shell, you can use the `unset` command followed by the variable name.
+
+For example, if you want to remove an environment variable called `MY_VARIABLE`, you can do so by typing the following command:
+
+```bash
+unset MY_VARIABLE
+```
+
+After running this command, the `MY_VARIABLE` environment variable will be removed and no longer accessible in the current shell session.
 ````
