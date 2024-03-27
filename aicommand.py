@@ -13,24 +13,41 @@ client = openai.Client(
 parser: ArgumentParser = argparse.ArgumentParser("aicommand")
 
 parser.add_argument(
-    "prompt", help="Prompt describing task/command to produce and execute.", type=str
+    "--executor",
+    help="Application/executor for executing the generated command",
+    type=str,
 )
 
-shell: str = "powershell"
-
-if os.name != "nt":
-    shell = "pwsh"
-
-customShell: str = os.environ.get("AI_COMMAND_SHELL")
-
-if customShell is not None:
-    shell = customShell
+parser.add_argument(
+    "prompt", help="Prompt describing task/command to produce and execute.", type=str
+)
 
 args: Namespace = parser.parse_args()
 print("Prompt:\n" + args.prompt.strip())
 
-prompt: str = "Create a " + shell + " script. Answer without giving explanation, just pure script. Do not mark the produced script as a code."
+executor: str = "powershell"
+
+if os.name != "nt":
+    executor = "pwsh"
+
+customExecutor: str = os.environ.get("AI_COMMAND_EXECUTOR")
+
+if customExecutor is not None:
+    executor = customExecutor
+
+if args.executor is not None:
+    executor = args.executor
+
+prompt: str = (
+    "Create a "
+    + executor
+    + " script. Answer without giving explanation, just pure script. Do not mark the produced script as a code."
+)
 prompt += '"""' + args.prompt.strip() + '"""'
+
+if executor == "python":
+    prompt += " Do not use new line as statement delimiter, use semicolon instead. Remove all new line, make all statements fit on a single line"
+
 temperature: float = 0.7
 max_tokens: int = 60
 
@@ -56,14 +73,35 @@ user_choose_to_execute: bool = lowered_user_input == "yes" or lowered_user_input
 if user_choose_to_execute:
     print("Executing generated command ...")
 
-    if shell == 'powershell' or shell == 'pwsh':
+    if executor == "powershell" or executor == "pwsh":
         result: CompletedProcess[bytes] = subprocess.run(
-            [shell, "-Command", generated_text], stdout=subprocess.PIPE
+            [executor, "-Command", generated_text], stdout=subprocess.PIPE
+        )
+    elif executor == "bash":
+        result: CompletedProcess[bytes] = subprocess.run(
+            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+        )
+    elif executor == "zsh":
+        result: CompletedProcess[bytes] = subprocess.run(
+            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+        )
+    elif executor == "python":
+        result: CompletedProcess[bytes] = subprocess.run(
+            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+        )
+        result_text = exec(generated_text)
+    elif executor == "cmd":
+        result: CompletedProcess[bytes] = subprocess.run(
+            [executor, "/c", generated_text], stdout=subprocess.PIPE
         )
     else:
         result: CompletedProcess[bytes] = subprocess.run(
-            [shell, "/c", generated_text], stdout=subprocess.PIPE
+            ["sh", "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
         )
+
     print(result.stdout.decode("utf-8"))
+
+    if result.stderr is not None:
+        print(result.stderr.decode("utf-8"))
 else:
     print("You choose not to execute the generated command.")
