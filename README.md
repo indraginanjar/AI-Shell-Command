@@ -2,11 +2,29 @@
 
 ## Description
 
-A powershell script that runs a python script to generate powershell/pwsh command and execute it.
+Executor scripts that runs a python script to generate powershell/pwsh (or any other supported executor/shell) command and execute it.
 
 ### Supported language
 
-AI operation is done through OpenAI, so all supported language  by OpenAI can be used in with **aicommand**.
+AI operation is done through OpenAI, so all supported language  by OpenAI can be used in with **aicommand** and **aiprompt**.
+
+### Supported command language/executor
+
+Supported executor:
+
+1. powerShell, default executor on Windows system used by **aicommand.ps1**
+
+2. pwsh, default executor on  non-Windows systems (like Linux or MacOS) used by **aicommand.ps1**
+
+3. bash (Bourne Again SHell), default executor used by **aicommand.sh**
+
+4. zsh (Z shell)
+
+5. cmd (DOS/Windows Command Prompt)
+
+6. python
+
+7. sh, default executor for any case of invalid executor argument inputed
 
 ## Installation
 
@@ -50,13 +68,15 @@ AI_COMMAND_OPENAI_API_KEY=<Your OpenAI API Key>
 
 #### Optional environment variable
 
-Default shell is **powershell** on Windows operating system. For any other operating system, aicommand will use **pwsh** as default shell.
+Default executor is **powershell** on Windows operating system. For any other operating system, aicommand will use **pwsh** as default executor.
 
-To define any other shell, set it on evironment variable:
+To define any other executor, set it on evironment variable:
 
 ```ini
-AI_COMMAND_SHELL=<shell to use>
+AI_COMMAND_EXECUTOR=<executor to use>
 ```
+
+Currently, this environment variable only affecting **aicommand.ps1** and **aicommand.py**
 
 ## Usage
 
@@ -85,9 +105,19 @@ Program Files
 PS C:\Program Files>
 ```
 
+### Usage by directly running aicommand python
+
+Currently running aicommand.py directly is the only way for using all types of supported executors without setting the executor on AI_COMMAND_EXECUTOR environment variable.
+
+```powershell
+.\.venv\Script\Activate.ps1
+python aicommand.py --executor your_executor "your prompt describing task/command to produce and execute."
+deactivate
+```
+
 ### Changing directory
 
-Current shell location is not affected by  the `cd` or `Set-Location` command. To change the current directory could only effective if you start a new session after changing directory, so the directory change is only happen in new session.
+Current executor location is not affected by  the `cd` or `Set-Location` command. To change the current directory could only effective if you start a new session after changing directory, so the directory change is only happen in new session.
 
 Example:
 
@@ -111,6 +141,16 @@ Syntax:
 ```powershell
 powershell aicommand.ps1 "your prompt describing task/command to produce and execute."
 ```
+
+### Running from Bash
+
+Syntax:
+
+```bash
+powershell aicommand.sh "your prompt describing task/command to produce and execute."
+```
+
+Currently **aicommand.sh** could only targetting bash as the executor.
 
 ## AI Prompt
 
@@ -163,5 +203,5 @@ For example, if you want to remove an environment variable called `MY_VARIABLE`,
 unset MY_VARIABLE
 ```
 
-After running this command, the `MY_VARIABLE` environment variable will be removed and no longer accessible in the current shell session.
+After running this command, the `MY_VARIABLE` environment variable will be removed and no longer accessible in the current executor session.
 ````
