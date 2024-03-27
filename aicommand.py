@@ -47,6 +47,8 @@ prompt += '"""' + args.prompt.strip() + '"""'
 
 if executor == "python":
     prompt += " Do not use new line as statement delimiter, use semicolon instead. Remove all new line, make all statements fit on a single line"
+elif executor == "bash" or executor == "zsh" or executor == "sh":
+    prompt += " Do not use shebang. Do not use new line as statement delimiter, use semicolon instead. Remove all new line, make all statements fit on a single line"
 
 temperature: float = 0.7
 max_tokens: int = 60
