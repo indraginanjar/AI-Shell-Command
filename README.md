@@ -68,7 +68,7 @@ AI_COMMAND_OPENAI_API_KEY=<Your OpenAI API Key>
 
 #### Optional environment variable
 
-Default executor is **powershell** on Windows operating system. For any other operating system, aicommand will use **pwsh** as default executor.
+Default executor for **aicommand.ps1** is **powershell** on Windows operating system. For any other operating system, aicommand will use **pwsh** as default executor.
 
 To define any other executor, set it on evironment variable:
 
@@ -80,7 +80,7 @@ Currently, this environment variable only affecting **aicommand.ps1** and **aico
 
 ## Usage
 
-To use **aicommand**, open powershell or pwsh terminal
+To use **aicommand.ps1**, open powershell or pwsh terminal
 
 Syntax:
 
@@ -107,12 +107,41 @@ PS C:\Program Files>
 
 ### Usage by directly running aicommand python
 
-Currently running aicommand.py directly is the only way for using all types of supported executors without setting the executor on AI_COMMAND_EXECUTOR environment variable.
+Currently running **aicommand.py** directly is the only way for using all types of supported executors without setting the executor on AI_COMMAND_EXECUTOR environment variable.
 
 ```powershell
 .\.venv\Script\Activate.ps1
 python aicommand.py --executor your_executor "your prompt describing task/command to produce and execute."
 deactivate
+```
+
+#### Notes on using non existing executor
+
+Most of the time choosing non existing executor will just show error message in console.
+
+For example  if you bash as the executor on Windows:
+
+```powershell
+PS C:\> aicommand.ps1 --executor bash "get current local datetime"
+Prompt:
+get current local datetime
+Generated command:
+date +%Y%m%d%H%M%S;
+Do you want to execute the generated command? (y)es/(n)o: y
+Executing generated command ...
+/bin/bash: date +%Y%m%d%H%M%S;: command not found
+```
+
+Actually if you only want to get the command without executing it, you could safely choose **no** on question `Do you want to execute the generated command? (y)es/(n)o`.
+
+```powershell
+PS C:\> aicommand.ps1 --executor bash "get current local datetime"
+Prompt:
+get current local datetime
+Generated command:
+date +"%Y-%m-%d %H:%M:%S";
+Do you want to execute the generated command? (y)es/(n)o: n
+You choose not to execute the generated command.
 ```
 
 ### Changing directory
@@ -124,9 +153,9 @@ Example:
 ```powershell
 aicommand.ps1 "change directory to program files then open a new shell"
 Prompt:
- change directory to program files then open a new shell
+change directory to program files then open a new shell
 Generated command:
- cd "C:\Program Files"
+cd "C:\Program Files"
 Start-Process powershell
 Do you want to execute the generated command? (y)es/(n)o: y
 Executing generated command ...
