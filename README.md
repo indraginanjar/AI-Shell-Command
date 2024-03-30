@@ -8,6 +8,18 @@ Executor scripts that runs a python script to generate powershell/pwsh (or any o
 
 AI operation is done through OpenAI, so all supported language  by OpenAI can be used in with **aicommand** and **aiprompt**.
 
+### Executable scripts
+
+Based on language, currently there's 3 categories of executable script:
+
+1. python: aicommand.py and aiprompt.py
+
+2. powershell: aicommand.ps1 and aiprompt.ps1
+
+3. bash: aicommand.sh and aiprompt.sh
+
+Actually powershell and bash versions is only immediate script for calling the python script easier from any folders.
+
 ### Supported command language/executor
 
 Supported executor:
