@@ -1,4 +1,4 @@
-# AI Command
+# AI Shell Command
 
 ## Description
 
@@ -32,7 +32,7 @@ Supported executor:
 
 Steps:
 
-1. clone the **aicommand** from <https://github.com/indraginanjar/AI-Command.git>
+1. clone the **aicommand** from <https://github.com/indraginanjar/AI-Shell-Command.git>
 
 2. Enter the **aicommand** project directory in commandline (assumed powershell or pwsh)
 
@@ -48,7 +48,7 @@ Steps:
 
 Step:
 
-1. clone the **aicommand** from <https://github.com/indraginanjar/AI-Command.git>
+1. clone the **aicommand** from <https://github.com/indraginanjar/AI-Shell-Command.git>
 
 2. Enter the **aicommand** project directory in commandline (assumed powershell or pwsh)
 
