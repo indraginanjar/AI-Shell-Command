@@ -6,7 +6,7 @@ import openai
 import os
 
 client = openai.Client(
-    api_key=os.environ.get("AI_COMMAND_OPENAI_API_KEY"),
+    api_key=os.environ.get("AI_SHELL_COMMAND_OPENAI_API_KEY")
 )
 
 parser: ArgumentParser = argparse.ArgumentParser("aicommand")
