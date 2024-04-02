@@ -1,2 +1,7 @@
 .venv
+.vscode
+script/aicommand-post-script.ps1
+script/aicommand-pre-script.ps1
+script/aiprompt-post-script.ps1
+script/aiprompt-pre-script.ps1
 venv

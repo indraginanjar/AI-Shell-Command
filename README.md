@@ -18,7 +18,7 @@ Based on language, currently there's 3 categories of executable script:
 
 3. bash: aicommand.sh and aiprompt.sh
 
-Actually powershell and bash versions is only immediate script for calling the python script easier from any folders.
+In reality, the PowerShell and Bash versions are just immediate scripts for calling the Python script more easily from any folder without requiring python codes in **ai-shell-command** to be installed globally.
 
 ### Supported command language/executor
 
@@ -51,6 +51,19 @@ Steps:
 3. [Optional] Create virtual environment using `python -m venv .venv`
 
 4. [Optional] Activate the created virtual environment, `.\.venv\Script\Activate.ps1`
+   If you're using venv, copy `script/ai*-*script.example.ps1` to `script/ai*-*script.ps1`, then edit for adjusting your venv folder.
+
+   Example if you're using venv in `venv/` folder:
+
+   ```powershell
+   $venvActivationScriptFile = Join-Path -Path $scriptDirectory -ChildPath .venv/Scripts/Activate.ps1
+   ```
+
+   change it to:
+
+   ```powershell
+   $venvActivationScriptFile = Join-Path -Path $scriptDirectory -ChildPath venv/Scripts/Activate.ps1
+   ```
 
 5. Install the required modules, `pip install -r requirements.txt`
 

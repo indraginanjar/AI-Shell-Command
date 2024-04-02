@@ -16,12 +16,22 @@
 #>
 
 $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Definition
-. $scriptDirectory\.venv\Scripts\Activate.ps1
+
+$additionalScriptDirectory = Join-Path -Path $scriptDirectory -ChildPath script
+
+$preScriptPath = Join-Path -Path $additionalScriptDirectory -ChildPath aicommand-pre-script.ps1
+
+if(Test-Path -Path $preScriptPath -PathType Leaf) {
+    . $preScriptPath
+}
+
+$scriptPath = Join-Path -Path $scriptDirectory -ChildPath aicommand.py
 
 if ($args.Count -eq 3 -and ($args[0] -eq '--executor' -or $args[0] -eq '-executor')) {
     [String] $executor = $args[1]
     [String] $prompt = $args[2]
-    python $scriptDirectory\aicommand.py --executor $executor "$prompt"
+
+    python $scriptPath --executor $executor "$prompt"
 
 } else {
     $params = ""
@@ -30,7 +40,11 @@ if ($args.Count -eq 3 -and ($args[0] -eq '--executor' -or $args[0] -eq '-executo
         $params = $params + " " + $($args[$i])
     }
     
-    python $scriptDirectory\aicommand.py "$params"
+    python $scriptPath "$params"
 }
 
-deactivate
+$postScriptPath = Join-Path -Path $additionalScriptDirectory -ChildPath aicommand-post-script.ps1
+
+if(Test-Path -Path aicommand-post-script.ps1 -PathType Leaf) {
+    . $postScriptPath
+}
