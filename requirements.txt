@@ -2,6 +2,7 @@ openai
 ipykernel
 html2text
 playwright
+pytest
 pytest-playwright
 faiss-cpu
 asyncio
