@@ -19,7 +19,9 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "prompt", help="Prompt describing task/command to produce and execute.", type=str
+    "prompt",
+    help="Prompt describing task/command to produce and execute.",
+    type=str
 )
 
 args: Namespace = parser.parse_args()
@@ -41,14 +43,20 @@ if args.executor is not None:
 prompt: str = (
     "Create a "
     + executor
-    + " script. Answer without giving explanation, just pure script. Do not mark the produced script as a code."
+    + " script. Answer without giving explanation, just pure script."
+    + " Do not mark the produced script as a code."
 )
 prompt += '"""' + args.prompt.strip() + '"""'
 
 if executor == "python":
-    prompt += " Do not use new line as statement delimiter, use semicolon instead. Remove all new line, make all statements fit on a single line"
+    prompt += " Do not use new line as statement delimiter,"
+    prompt += " use semicolon instead. Remove all new line,"
+    prompt += " make all statements fit on a single line"
 elif executor == "bash" or executor == "zsh" or executor == "sh":
-    prompt += " Do not use shebang. Do not use new line as statement delimiter, use semicolon instead. Remove all new line, make all statements fit on a single line"
+    prompt += " Do not use shebang."
+    prompt += " Do not use new line as statement delimiter,"
+    prompt += " use semicolon instead. Remove all new line,"
+    prompt += " make all statements fit on a single line"
 
 temperature: float = 0.7
 max_tokens: int = 60
@@ -67,10 +75,12 @@ choice: Choice = chat_completion.choices[0]
 generated_text = choice.message.content.strip()
 print("Generated command:\n" + generated_text)
 
-user_input: str = input("Do you want to execute the generated command? (y)es/(n)o: ")
+confirm: str = "Do you want to execute the generated command? (y)es/(n)o: "
+user_input: str = input(confirm)
 lowered_user_input: str = user_input.lower()
 
-user_choose_to_execute: bool = lowered_user_input == "yes" or lowered_user_input == "y"
+user_choose_to_execute: bool = lowered_user_input == "yes"
+user_choose_to_execute |= lowered_user_input == "y"
 
 if user_choose_to_execute:
     print("Executing generated command ...")
@@ -81,15 +91,18 @@ if user_choose_to_execute:
         )
     elif executor == "bash":
         result: CompletedProcess[bytes] = subprocess.run(
-            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+            [executor, "-c", '"' + generated_text + '"'],
+            stdout=subprocess.PIPE
         )
     elif executor == "zsh":
         result: CompletedProcess[bytes] = subprocess.run(
-            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+            [executor, "-c", '"' + generated_text + '"'],
+            stdout=subprocess.PIPE
         )
     elif executor == "python":
         result: CompletedProcess[bytes] = subprocess.run(
-            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+            [executor, "-c", '"' + generated_text + '"'],
+            stdout=subprocess.PIPE
         )
         result_text = exec(generated_text)
     elif executor == "cmd":
@@ -98,7 +111,8 @@ if user_choose_to_execute:
         )
     else:
         result: CompletedProcess[bytes] = subprocess.run(
-            ["sh", "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
+            ["sh", "-c", '"' + generated_text + '"'],
+            stdout=subprocess.PIPE
         )
 
     print(result.stdout.decode("utf-8"))

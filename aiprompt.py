@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
 from openai.types.chat.chat_completion import ChatCompletion, Choice
-from subprocess import CompletedProcess
 import argparse
 import openai
 import os
