@@ -1,27 +1,42 @@
 from argparse import ArgumentParser, Namespace
-from openai.types.chat.chat_completion import ChatCompletion, Choice
 from subprocess import CompletedProcess
 import argparse
-import openai
 import os
 import subprocess
+from providers.ai_provider import AiProvider
+from providers import get_ai_provider
 
-client = openai.Client(
-    api_key=os.environ.get("AI_SHELL_COMMAND_OPENAI_API_KEY")
-)
 
 parser: ArgumentParser = argparse.ArgumentParser("aicommand")
-
-parser.add_argument(
-    "--executor",
-    help="Application/executor for executing the generated command",
-    type=str,
-)
 
 parser.add_argument(
     "prompt",
     help="Prompt describing task/command to produce and execute.",
     type=str
+)
+parser.add_argument(
+    "--provider",
+    help="AI provider (openai or lmstudio).",
+    type=str, default="openai"
+)
+parser.add_argument(
+    "--base-url",
+    help="AI Provider's base URL.",
+    type=str
+)
+parser.add_argument(
+    "--model",
+    help="Name of the model to use (e.g., gpt-3, gpt-neo).",
+    type=str
+)
+parser.add_argument(
+    "--api-key", help="API key.", type=str
+)
+
+parser.add_argument(
+    "--executor",
+    help="Application/executor for executing the generated command",
+    type=str,
 )
 
 args: Namespace = parser.parse_args()
@@ -58,21 +73,16 @@ elif executor == "bash" or executor == "zsh" or executor == "sh":
     prompt += " use semicolon instead. Remove all new line,"
     prompt += " make all statements fit on a single line"
 
-temperature: float = 0.7
-max_tokens: int = 60
+base_url: str = args.base_url
+model_name: str = args.model
+api_key: str = args.api_key
 
-chat_completion: ChatCompletion = client.chat.completions.create(
-    messages=[
-        {
-            "role": "user",
-            "content": prompt,
-        }
-    ],
-    model="gpt-3.5-turbo",
+ai_provider: AiProvider = get_ai_provider(
+    args.provider, base_url, model_name, api_key
 )
 
-choice: Choice = chat_completion.choices[0]
-generated_text = choice.message.content.strip()
+generated_text = ai_provider.generate_response(prompt)
+
 print("Generated command:\n" + generated_text)
 
 confirm: str = "Do you want to execute the generated command? (y)es/(n)o: "
