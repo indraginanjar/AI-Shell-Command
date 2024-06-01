@@ -12,35 +12,28 @@ parser: ArgumentParser = argparse.ArgumentParser("aicommand")
 parser.add_argument(
     "prompt",
     help="Prompt describing task/command to produce and execute.",
-    type=str
+    type=str,
+    nargs=argparse.REMAINDER,
 )
 parser.add_argument(
-    "--provider",
-    help="AI provider (openai or lmstudio).",
-    type=str, default="openai"
+    "--provider", help="AI provider (openai or lmstudio).", type=str, default="openai"
 )
-parser.add_argument(
-    "--base-url",
-    help="AI Provider's base URL.",
-    type=str
-)
+parser.add_argument("--base-url", help="AI Provider's base URL.", type=str)
 parser.add_argument(
     "--model",
-    help="Name of the model to use (e.g., gpt-3, gpt-neo).",
-    type=str
+    help="Name of the model to use (e.g. gpt-3, gpt-neo, llama3), model availability is based on provider.",
+    type=str,
 )
-parser.add_argument(
-    "--api-key", help="API key.", type=str
-)
+parser.add_argument("--api-key", help="API key.", type=str)
 
 parser.add_argument(
     "--executor",
-    help="Application/executor for executing the generated command",
+    help="Application/executor for executing the generated command (e.g. powershell, bash)",
     type=str,
 )
 
 args: Namespace = parser.parse_args()
-print("Prompt:\n" + args.prompt.strip())
+print("Prompt:\n" + " ".join(args.prompt).strip())
 
 executor: str = "powershell"
 
@@ -61,7 +54,7 @@ prompt: str = (
     + " script. Answer without giving explanation, just pure script."
     + " Do not mark the produced script as a code."
 )
-prompt += '"""' + args.prompt.strip() + '"""'
+prompt += '"""' + " ".join(args.prompt).strip() + '"""'
 
 if executor == "python":
     prompt += " Do not use new line as statement delimiter,"
@@ -77,9 +70,7 @@ base_url: str = args.base_url
 model_name: str = args.model
 api_key: str = args.api_key
 
-ai_provider: AiProvider = get_ai_provider(
-    args.provider, base_url, model_name, api_key
-)
+ai_provider: AiProvider = get_ai_provider(args.provider, base_url, model_name, api_key)
 
 generated_text = ai_provider.generate_response(prompt)
 
@@ -101,18 +92,15 @@ if user_choose_to_execute:
         )
     elif executor == "bash":
         result: CompletedProcess[bytes] = subprocess.run(
-            [executor, "-c", '"' + generated_text + '"'],
-            stdout=subprocess.PIPE
+            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
         )
     elif executor == "zsh":
         result: CompletedProcess[bytes] = subprocess.run(
-            [executor, "-c", '"' + generated_text + '"'],
-            stdout=subprocess.PIPE
+            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
         )
     elif executor == "python":
         result: CompletedProcess[bytes] = subprocess.run(
-            [executor, "-c", '"' + generated_text + '"'],
-            stdout=subprocess.PIPE
+            [executor, "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
         )
         result_text = exec(generated_text)
     elif executor == "cmd":
@@ -121,8 +109,7 @@ if user_choose_to_execute:
         )
     else:
         result: CompletedProcess[bytes] = subprocess.run(
-            ["sh", "-c", '"' + generated_text + '"'],
-            stdout=subprocess.PIPE
+            ["sh", "-c", '"' + generated_text + '"'], stdout=subprocess.PIPE
         )
 
     print(result.stdout.decode("utf-8"))
